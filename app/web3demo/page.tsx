@@ -1,26 +1,27 @@
 "use client";
+
+import React from "react";
 import LoginForm from "@/components/form/LoginForm";
 import { LayoutShell } from "@/components/LayoutShell";
 import { UserProfileCard } from "@/components/profile/UserProfile";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useAppEnv } from "@/store/useAppEnv";
-import { useTelegramUserStore } from "@/store/useTelegramUserStore";
-
-import React, { useEffect } from "react";
+import { useTelegramAuth } from "@/hooks/useTelegramAuth";
 
 const Page = () => {
+  const hasMounted = useHasMounted();
   const { isTelegram } = useAppEnv();
-  const { user } = useTelegramUserStore();
-  const hasMounted = useHasMounted(); // ✅ 防止 SSR hydration 闪烁
+
+  useTelegramAuth(); // ⬅️ 自动处理 telegram 登录逻辑
+
   if (!hasMounted) return null;
+
   return (
     <LayoutShell>
-      {/* user profile */}
-      <div className="mt-4">
+      <div className="mt-4 space-y-4">
         <UserProfileCard />
+        {!isTelegram && <LoginForm />}
       </div>
-      {/* login for web */}
-      <div>{!isTelegram && <LoginForm />}</div>
     </LayoutShell>
   );
 };

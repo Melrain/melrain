@@ -33,7 +33,7 @@ export const profileData: Record<"zh" | "en", ProfileData> = {
     techTags: ["AA账户", "Gasless", "NFT", "ERC20", "Solidity", "TON"],
   },
   en: {
-    greeting: "Hi, I'm MelRain.",
+    greeting: "Hi, I'm MelRain",
     description: [
       "Focused on building ",
       {

@@ -23,6 +23,13 @@ const page = () => {
                 description:
                   "一个基于ERC20代币作为媒介的NFT交易网站，无需ETH作为燃料",
                 href: "/web3demo",
+                tags: [
+                  "ERC20",
+                  "ERC721",
+                  "Gasless",
+                  "Account Abstract",
+                  "Air Drop",
+                ],
               },
               {
                 title: "AA 账户交互",
@@ -52,6 +59,17 @@ const page = () => {
                   <p className="text-sm text-gray-300 mt-1">
                     {demo.description}
                   </p>
+                  {demo.tags && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {demo.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 text-xs rounded-full bg-cyan-900/20 text-cyan-300 border border-cyan-700/40">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </a>
               </li>
             ))}
