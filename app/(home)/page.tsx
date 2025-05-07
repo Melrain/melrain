@@ -19,9 +19,10 @@ const page = () => {
           <ul className="space-y-4">
             {[
               {
-                title: "钱包登录",
-                description: "基于 Web3Auth 的一键钱包登录功能。",
-                href: "/demo/wallet-login",
+                title: "NFT MarketPlace",
+                description:
+                  "一个基于ERC20代币作为媒介的NFT交易网站，无需ETH作为燃料",
+                href: "/web3demo",
               },
               {
                 title: "AA 账户交互",

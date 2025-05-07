@@ -22,15 +22,16 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       id="layout-shell"
-      className={`safe-area-wrapper relative ${
+      className={` safe-area-wrapper relative ${
         isTelegram && isFullScreen ? "pt-28" : "pt-6"
       } flex flex-col min-h-screen bg-[--background] text-[--foreground]`}>
       <main className="flex-1 px-4">{children}</main>
       <div className="absolute top-0 right-0 z-50">
         <LangToggleButton />
       </div>
-      <ShootingStars />
+
       <StarsBackground />
+      <ShootingStars />
     </div>
   );
 }
