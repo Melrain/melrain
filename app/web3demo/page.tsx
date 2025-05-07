@@ -12,8 +12,6 @@ const Page = () => {
   const hasMounted = useHasMounted();
   const { isTelegram } = useAppEnv();
 
-  useTelegramAuth(); // ⬅️ 自动处理 telegram 登录逻辑
-
   if (!hasMounted) return null;
 
   return (
