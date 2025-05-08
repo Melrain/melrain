@@ -6,7 +6,6 @@ import { LayoutShell } from "@/components/LayoutShell";
 import { UserProfileCard } from "@/components/profile/UserProfile";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useAppEnv } from "@/store/useAppEnv";
-import { useTelegramAuth } from "@/hooks/useTelegramAuth";
 
 const Page = () => {
   const hasMounted = useHasMounted();
