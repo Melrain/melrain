@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,6 +12,9 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import axios from "axios";
+import { usePublicUserStore } from "@/store/usePublicUserStore";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const { toast } = useToast();
@@ -20,6 +24,8 @@ export default function LoginForm() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(0);
+  const router = useRouter();
+  const { setUser } = usePublicUserStore();
 
   const sendCode = async () => {
     if (!email.includes("@")) {
@@ -30,10 +36,18 @@ export default function LoginForm() {
     setLoading(true);
     try {
       // TODO: 替换为真实 API 请求
-      await new Promise((res) => setTimeout(res, 800));
-      toast({ title: "验证码发送成功", description: `已发送至 ${email}` });
+      // await new Promise((res) => setTimeout(res, 800));
+      // toast({ title: "验证码发送成功", description: `已发送至 ${email}` });
+      // setStep("otp");
+      // setResendCountdown(30);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/request-login-code`,
+        {
+          email: email,
+        }
+      );
+      console.log("[LoginForm]:request login code response:", response);
       setStep("otp");
-      setResendCountdown(30);
     } catch {
       toast({
         title: "发送失败",
@@ -55,14 +69,56 @@ export default function LoginForm() {
     }
   }, [resendCountdown]);
 
-  const verifyCode = () => {
+  const verifyCode = async () => {
     if (otp.length !== 6) {
       toast({ title: "请输入完整验证码" });
       return;
     }
 
-    // TODO: 替换为真实验证 API
-    toast({ title: "验证成功", description: `验证码为：${otp}` });
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/verify-code`,
+        {
+          email,
+          code: otp,
+        }
+      );
+
+      console.log("[LoginForm]:verify code response:", response);
+
+      const {
+        accessToken,
+        refreshToken,
+        userId,
+        evmAddress,
+        smartAccount,
+        authMethod,
+      } = response.data;
+
+      // ✅ 存储 token 到 localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("evmAddress", evmAddress);
+      localStorage.setItem("smartAccount", smartAccount);
+      localStorage.setItem("authMethod", authMethod);
+
+      const publicUserData = {
+        userId: userId,
+        authMethod: authMethod,
+        walletAddress: smartAccount,
+      };
+
+      setUser(publicUserData);
+
+      // ✅ 设置 axios 默认 Authorization 头
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+      // ✅ 可选：跳转页面
+      router.push("/web3demo"); // 需引入 useRouter()
+    } catch (error: any) {
+      console.error(error);
+    }
   };
 
   return (

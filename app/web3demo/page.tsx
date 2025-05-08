@@ -1,26 +1,11 @@
 "use client";
 
-import React from "react";
-import LoginForm from "@/components/form/LoginForm";
-import { LayoutShell } from "@/components/LayoutShell";
-import { UserProfileCard } from "@/components/profile/UserProfile";
-import { useHasMounted } from "@/hooks/useHasMounted";
-import { useAppEnv } from "@/store/useAppEnv";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
-const Page = () => {
-  const hasMounted = useHasMounted();
-  const { isTelegram } = useAppEnv();
-
-  if (!hasMounted) return null;
-
+export default function Page() {
   return (
-    <LayoutShell>
-      <div className="mt-4 space-y-4">
-        <UserProfileCard />
-        {!isTelegram && <LoginForm />}
-      </div>
-    </LayoutShell>
+    <AuthGuard redirectTo="/web3demo/login">
+      <div className="text-white">欢迎回来!</div>
+    </AuthGuard>
   );
-};
-
-export default Page;
+}

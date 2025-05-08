@@ -1,9 +1,10 @@
+"use client";
 import { LayoutShell } from "@/components/LayoutShell";
 import MyProfile from "@/components/profile/MyProfile";
 
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <LayoutShell>
       <div className="flex flex-col md:flex-row gap-8 w-full md:p-10 font-kuaile">
@@ -80,4 +81,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

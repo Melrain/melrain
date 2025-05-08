@@ -6,14 +6,15 @@ import { Button } from "../ui/button";
 import axios from "axios";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-export const UserProfileCard = () => {
+export const TelegramUserLoginCard = () => {
   const { user } = useTelegramUserStore();
   const { user: publicUser, setUser: setPublicUser } = usePublicUserStore();
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   if (!user) return null;
 
   const handleLogin = async () => {
@@ -83,6 +84,12 @@ export const UserProfileCard = () => {
           <div className="text-white font-mono mt-1">
             {publicUser.walletAddress}
           </div>
+          <Button
+            onClick={() => {
+              router.push("/web3demo");
+            }}>
+            进入Web3 MarketPlace
+          </Button>
         </div>
       )}
     </div>
