@@ -1,12 +1,6 @@
 export const erc721_abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_erc20Token",
-        type: "address",
-      },
-    ],
+    inputs: [],
     stateMutability: "nonpayable",
     type: "constructor",
   },
@@ -114,6 +108,33 @@ export const erc721_abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -188,6 +209,19 @@ export const erc721_abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "newFee",
+        type: "uint256",
+      },
+    ],
+    name: "ListingFeeUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "_tokenId",
         type: "uint256",
       },
@@ -199,10 +233,35 @@ export const erc721_abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "uri",
+        type: "string",
       },
     ],
     name: "TokenCreated",
@@ -222,6 +281,12 @@ export const erc721_abi = [
         internalType: "uint256",
         name: "price",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "token",
+        type: "address",
       },
     ],
     name: "TokenListed",
@@ -248,8 +313,33 @@ export const erc721_abi = [
         name: "price",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
     ],
     name: "TokenSold",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "supported",
+        type: "bool",
+      },
+    ],
+    name: "TokenSupportUpdated",
     type: "event",
   },
   {
@@ -276,6 +366,19 @@ export const erc721_abi = [
     ],
     name: "Transfer",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "addSupportedToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
@@ -346,41 +449,6 @@ export const erc721_abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getAllListedNFTs",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "price",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "seller",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "isListed",
-            type: "bool",
-          },
-        ],
-        internalType: "struct nft_market.NFTListing[]",
-        name: "",
-        type: "tuple[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -400,35 +468,24 @@ export const erc721_abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getMyListedTokens",
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "getBalance",
     outputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "tokenId",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "price",
-            type: "uint256",
-          },
-          {
-            internalType: "address",
-            name: "seller",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "isListed",
-            type: "bool",
-          },
-        ],
-        internalType: "struct nft_market.NFTListing[]",
+        internalType: "uint256",
         name: "",
-        type: "tuple[]",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -502,6 +559,11 @@ export const erc721_abi = [
         name: "price",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "paymentToken",
+        type: "address",
+      },
     ],
     name: "listToken",
     outputs: [],
@@ -523,12 +585,12 @@ export const erc721_abi = [
   },
   {
     inputs: [],
-    name: "marketplaceOwner",
+    name: "name",
     outputs: [
       {
-        internalType: "address",
+        internalType: "string",
         name: "",
-        type: "address",
+        type: "string",
       },
     ],
     stateMutability: "view",
@@ -536,12 +598,12 @@ export const erc721_abi = [
   },
   {
     inputs: [],
-    name: "name",
+    name: "owner",
     outputs: [
       {
-        internalType: "string",
+        internalType: "address",
         name: "",
-        type: "string",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -591,19 +653,6 @@ export const erc721_abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "paymentToken",
-    outputs: [
-      {
-        internalType: "contract IERC20",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -612,11 +661,31 @@ export const erc721_abi = [
       },
       {
         internalType: "uint256",
-        name: "price",
+        name: "newPrice",
         type: "uint256",
       },
     ],
     name: "relistToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "removeSupportedToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -693,6 +762,25 @@ export const erc721_abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "supportedTokens",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",
@@ -752,6 +840,11 @@ export const erc721_abi = [
         name: "isListed",
         type: "bool",
       },
+      {
+        internalType: "address",
+        name: "paymentToken",
+        type: "address",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -807,6 +900,19 @@ export const erc721_abi = [
       },
     ],
     name: "transferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
