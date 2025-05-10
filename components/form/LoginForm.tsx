@@ -12,9 +12,9 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import axios from "axios";
 import { usePublicUserStore } from "@/store/usePublicUserStore";
 import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
 
 export default function LoginForm() {
   const { toast } = useToast();
@@ -40,7 +40,7 @@ export default function LoginForm() {
       // toast({ title: "验证码发送成功", description: `已发送至 ${email}` });
       // setStep("otp");
       // setResendCountdown(30);
-      const response = await axios.post(
+      const response = await api.post(
         `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/request-login-code`,
         {
           email: email,
@@ -48,12 +48,8 @@ export default function LoginForm() {
       );
       console.log("[LoginForm]:request login code response:", response);
       setStep("otp");
-    } catch {
-      toast({
-        title: "发送失败",
-        description: "请稍后再试",
-        variant: "destructive",
-      });
+    } catch (error) {
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -74,10 +70,11 @@ export default function LoginForm() {
       toast({ title: "请输入完整验证码" });
       return;
     }
-
+    console.log("发送的邮箱:", email);
+    console.log("发送的验证码:", otp);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/verify-code`,
+      const response = await api.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/verify-login-code`,
         {
           email,
           code: otp,
@@ -86,18 +83,10 @@ export default function LoginForm() {
 
       console.log("[LoginForm]:verify code response:", response);
 
-      const {
-        accessToken,
-        refreshToken,
-        userId,
-        evmAddress,
-        smartAccount,
-        authMethod,
-      } = response.data;
+      const { userId, evmAddress, smartAccount, authMethod } = response.data;
 
       // ✅ 存储 token 到 localStorage
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+
       localStorage.setItem("userId", userId);
       localStorage.setItem("evmAddress", evmAddress);
       localStorage.setItem("smartAccount", smartAccount);
@@ -110,9 +99,6 @@ export default function LoginForm() {
       };
 
       setUser(publicUserData);
-
-      // ✅ 设置 axios 默认 Authorization 头
-      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
       // ✅ 可选：跳转页面
       router.push("/web3demo"); // 需引入 useRouter()

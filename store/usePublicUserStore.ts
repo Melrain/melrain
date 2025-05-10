@@ -1,6 +1,8 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// store/usePublicUserStore.ts
 import { create } from "zustand";
+import api from "@/lib/axios";
 
 interface PublicUser {
   userId: string;
@@ -14,8 +16,9 @@ interface Store {
   user: PublicUser | null;
   initialized: boolean;
   setUser: (user: PublicUser) => void;
-  initUserFromStorage: () => void;
+  initUserFromServer: () => Promise<void>;
   clearUser: () => void;
+  logout: () => Promise<void>;
 }
 
 export const usePublicUserStore = create<Store>((set) => ({
@@ -23,30 +26,32 @@ export const usePublicUserStore = create<Store>((set) => ({
   initialized: false,
 
   setUser: (user) => {
-    localStorage.setItem("user", JSON.stringify(user));
     set({ user });
   },
 
-  initUserFromStorage: () => {
-    console.log("🌀 initUserFromStorage 被调用");
+  initUserFromServer: async () => {
     try {
-      const raw = localStorage.getItem("user");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        console.log("✅ 读取成功", parsed);
-        set({ user: parsed, initialized: true });
-      } else {
-        console.log("❌ user 不存在");
-        set({ user: null, initialized: true });
-      }
+      const res = await api.get("/auth/me"); // 会自动带上 cookie
+      console.log("✅ /auth/me 响应:", res.data);
+      set({ user: res.data.user, initialized: true });
     } catch (err) {
-      console.error("❌ 解析 user 失败", err);
+      console.error("❌ /auth/me 请求失败:", err);
       set({ user: null, initialized: true });
     }
   },
 
   clearUser: () => {
-    localStorage.removeItem("user");
+    set({ user: null, initialized: true });
+  },
+
+  logout: async () => {
+    try {
+      await api.post("/auth/logout", {
+        userId: usePublicUserStore.getState().user?.userId,
+      });
+    } catch (err) {
+      console.warn("登出失败", err);
+    }
     set({ user: null, initialized: true });
   },
 }));

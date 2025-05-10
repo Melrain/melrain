@@ -1,30 +1,26 @@
-// src/components/auth/AuthGuard.tsx
+// components/auth/AuthGuard.tsx
 "use client";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePublicUserStore } from "@/store/usePublicUserStore";
 
-interface Props {
-  children: React.ReactNode;
-  redirectTo?: string; // 默认为 "/login"
-}
-
 export const AuthGuard = ({
   children,
-  redirectTo = "/web3demo/login",
-}: Props) => {
+  redirectTo = "/login",
+}: {
+  children: React.ReactNode;
+  redirectTo?: string;
+}) => {
   const router = useRouter();
-  const { user, initialized, initUserFromStorage } = usePublicUserStore();
+  const { user, initialized, initUserFromServer } = usePublicUserStore();
 
   useEffect(() => {
-    // 页面加载时恢复状态
     if (!initialized) {
-      initUserFromStorage();
+      initUserFromServer(); // ✅ 替换为后端初始化
     } else if (!user) {
       router.replace(redirectTo);
     }
-  }, [initialized, user, router, redirectTo, initUserFromStorage]);
+  }, [initialized, user, redirectTo, router, initUserFromServer]);
 
   if (!initialized) return <div className="text-white">加载中...</div>;
   if (!user) return null;

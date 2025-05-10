@@ -3,10 +3,11 @@
 import { useTelegramUserStore } from "@/store/useTelegramUserStore";
 import { usePublicUserStore } from "@/store/usePublicUserStore";
 import { Button } from "../ui/button";
-import axios from "axios";
+
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
 
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
@@ -20,7 +21,7 @@ export const TelegramUserLoginCard = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(
+      const res = await api.post(
         `${BACKEND_BASE_URL}/auth/login-telegram-user`,
         {
           telegramUserId: String(user.id),

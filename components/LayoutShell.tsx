@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect } from "react";
@@ -10,20 +9,20 @@ import { usePublicUserStore } from "@/store/usePublicUserStore";
 import LangToggleButton from "./LangToggleButton";
 import { ShootingStars } from "./ui/shooting-stars";
 import { StarsBackground } from "./ui/stars-background";
+import { AuthInitLoader } from "./auth/AuthInitLoader";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
-  // 初始化 Telegram Mini App SDK
   useInitTelegram();
 
   const { isTelegram } = useAppEnv();
   const { isFullScreen } = useTelegramUserStore();
   const initLang = useLangStore((state) => state.initLangFromStorage);
-  const initUser = usePublicUserStore((s) => s.initUserFromStorage);
+  const initUser = usePublicUserStore((s) => s.initUserFromServer); // ✅ 替换为后端初始化
 
   useEffect(() => {
     console.log("🔧 LayoutShell 初始化 useEffect 触发");
     initLang();
-    initUser(); // ✅ 关键调用
+    initUser();
   }, [initLang, initUser]);
 
   return (
@@ -40,6 +39,8 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
 
       <StarsBackground />
       <ShootingStars />
+
+      <AuthInitLoader />
     </div>
   );
 }
