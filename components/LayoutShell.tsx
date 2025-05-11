@@ -6,7 +6,7 @@ import { useAppEnv } from "@/store/useAppEnv";
 import { useLangStore } from "@/store/useLangStore";
 import { useTelegramUserStore } from "@/store/useTelegramUserStore";
 import { usePublicUserStore } from "@/store/usePublicUserStore";
-import LangToggleButton from "./LangToggleButton";
+
 import { ShootingStars } from "./ui/shooting-stars";
 import { StarsBackground } from "./ui/stars-background";
 import { AuthInitLoader } from "./auth/AuthInitLoader";
@@ -32,10 +32,6 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         isTelegram && isFullScreen ? "pt-28" : "pt-6"
       } flex flex-col min-h-screen bg-[--background] text-[--foreground]`}>
       <main className="flex-1 px-4">{children}</main>
-
-      <div className="absolute top-0 right-0 z-50">
-        <LangToggleButton />
-      </div>
 
       <StarsBackground />
       <ShootingStars />

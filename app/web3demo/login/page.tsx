@@ -16,11 +16,14 @@ const Page = () => {
   const { user } = usePublicUserStore();
 
   useEffect(() => {
-    if (!user) {
-      router.push("/web3demo/login"); // ✅ 正确：副作用放在 useEffect 中
+    // ✅ 已登录 → 重定向到主页或 dashboard
+    if (user) {
+      router.replace("/web3demo"); // 或 "/dashboard" 等
     }
   }, [router, user]);
-  if (!hasMounted) return null;
+
+  if (!hasMounted || user) return null; // ✅ 防止闪屏
+
   return (
     <LayoutShell>
       <div className="mt-4 space-y-4">
