@@ -13,7 +13,7 @@ export async function transferToken({
   amount: string;
 }): Promise<ApiResult<string>> {
   try {
-    const res = await api.post("/erc20/transfer", {
+    const res = await api.post("/erc20/gasless-transfer", {
       contractAddress,
       to,
       amount,
