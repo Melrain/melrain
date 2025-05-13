@@ -1,21 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { getBalance, transferToken } from "@/lib/erc20";
+import { getBalance, requestFreeGas, transferToken } from "@/lib/erc20";
 import { usePublicUserStore } from "@/store/usePublicUserStore";
-import { FaWallet, FaSpinner, FaStar, FaPaperPlane } from "react-icons/fa";
+import {
+  FaWallet,
+  FaSpinner,
+  FaStar,
+  FaPaperPlane,
+  FaBolt,
+} from "react-icons/fa";
 
 const contractAddress = process.env.NEXT_PUBLIC_ERC20_ADDRESS!;
 
 export function BalanceCard() {
   const { user } = usePublicUserStore();
-  const walletAddress = user?.walletAddress;
+  const walletAddress = user?.walletAddress ?? null; // 仅用于展示
   const [balance, setBalance] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [transferLoading, setTransferLoading] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [copied, setCopied] = useState(false);
+  const [gasLoading, setGasLoading] = useState(false);
+  const [gasMessage, setGasMessage] = useState<string | null>(null);
 
   const handleCopy = () => {
     if (!walletAddress) return;
@@ -27,7 +35,7 @@ export function BalanceCard() {
   const handleGetBalance = async () => {
     if (!walletAddress) return;
     setLoading(true);
-    const result = await getBalance({ contractAddress, walletAddress });
+    const result = await getBalance({ contractAddress });
     setLoading(false);
     if (result.success && result.data) {
       setBalance(result.data);
@@ -53,6 +61,23 @@ export function BalanceCard() {
     } else {
       alert(`❌ 转账失败：${result.error}`);
     }
+  };
+
+  const handleRequestFreeGas = async () => {
+    if (!walletAddress) return;
+    setGasLoading(true);
+    setGasMessage(null);
+    const result = await requestFreeGas(walletAddress);
+    setGasLoading(false);
+
+    if (result.success) {
+      setGasMessage("✅ 免费 Gas 请求成功！交易哈希：" + result.data);
+      await handleGetBalance(); // 可选：请求完后刷新 ETH 余额
+    } else {
+      setGasMessage("❌ 请求失败：" + result.error);
+    }
+
+    setTimeout(() => setGasMessage(null), 8000);
   };
 
   return (
@@ -97,6 +122,27 @@ export function BalanceCard() {
           "🔄 刷新余额"
         )}
       </button>
+
+      <button
+        className="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:brightness-110 active:scale-95 transition-all rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={handleRequestFreeGas}
+        disabled={!walletAddress || gasLoading}>
+        {gasLoading ? (
+          <>
+            <FaSpinner className="animate-spin" /> 请求中...
+          </>
+        ) : (
+          <>
+            <FaBolt /> 领取免费 Gas
+          </>
+        )}
+      </button>
+
+      {gasMessage && (
+        <div className="text-sm text-center font-medium text-sky-300 mt-2 break-words">
+          {gasMessage}
+        </div>
+      )}
 
       {balance !== null && (
         <div className="mt-2 px-4 py-3 rounded-lg bg-gradient-to-br from-slate-800 to-slate-700 text-center font-mono text-2xl text-emerald-300 shadow-inner ring-1 ring-white/10">

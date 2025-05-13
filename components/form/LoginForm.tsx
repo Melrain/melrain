@@ -95,7 +95,7 @@ export default function LoginForm() {
       const publicUserData = {
         userId: userId,
         authMethod: authMethod,
-        walletAddress: smartAccount,
+        walletAddress: evmAddress,
       };
 
       setUser(publicUserData);

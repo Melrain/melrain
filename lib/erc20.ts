@@ -38,19 +38,16 @@ export async function transferToken({
 
 export async function getBalance({
   contractAddress,
-  walletAddress,
 }: {
   contractAddress: string;
-  walletAddress: string;
 }): Promise<ApiResult<string>> {
   try {
     const res = await api.post("/erc20/balance", {
       contractAddress,
-      walletAddress,
     });
     return {
       success: true,
-      data: res.data, // ✅ 改为 data
+      data: res.data,
     };
   } catch (err: any) {
     console.error("[getBalance error]", err);
@@ -59,6 +56,33 @@ export async function getBalance({
       err?.response?.data?.message ||
       err?.message ||
       "查询余额失败，发生未知错误";
+
+    return {
+      success: false,
+      error: message,
+    };
+  }
+}
+
+// lib/erc20.ts
+
+export async function requestFreeGas(
+  walletAddress: string
+): Promise<ApiResult<string>> {
+  try {
+    const res = await api.post("/erc20/free-gas", {
+      to: walletAddress,
+    });
+
+    return {
+      success: true,
+      data: res.data?.txHash || "请求成功但未返回交易哈希",
+    };
+  } catch (err: any) {
+    console.error("[requestFreeGas error]", err);
+
+    const message =
+      err?.response?.data?.message || err?.message || "请求失败，发生未知错误";
 
     return {
       success: false,
