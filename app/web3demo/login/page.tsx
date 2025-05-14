@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import LoginForm from "@/components/form/LoginForm";
-import { LayoutShell } from "@/components/LayoutShell";
 import { TelegramUserLoginCard } from "@/components/auth/TelegramUserLoginCard";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useAppEnv } from "@/store/useAppEnv";
@@ -25,12 +24,10 @@ const Page = () => {
   if (!hasMounted || user) return null; // ✅ 防止闪屏
 
   return (
-    <LayoutShell>
-      <div className="mt-4 space-y-4">
-        <TelegramUserLoginCard />
-        {!isTelegram && <LoginForm />}
-      </div>
-    </LayoutShell>
+    <div className="mt-4 space-y-4">
+      <TelegramUserLoginCard />
+      {!isTelegram && <LoginForm />}
+    </div>
   );
 };
 

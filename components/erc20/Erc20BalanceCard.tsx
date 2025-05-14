@@ -13,7 +13,7 @@ import {
 
 const contractAddress = process.env.NEXT_PUBLIC_ERC20_ADDRESS!;
 
-export function BalanceCard() {
+export function Erc20BalanceCard() {
   const { user } = usePublicUserStore();
   const walletAddress = user?.walletAddress ?? null; // 仅用于展示
   const [balance, setBalance] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export function BalanceCard() {
   };
 
   return (
-    <div className="relative w-full max-w-xl mx-auto p-6 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-xl text-white space-y-5">
+    <div className="relative w-full max-w-xl mx-auto p-6 backdrop-blur-md bg-white/5 border border-white/10 shadow-green-400 rounded-2xl shadow-md text-white space-y-5">
       {/* 流星角标 */}
       <div className="absolute -top-3 -right-3 bg-gradient-to-br from-purple-400 to-blue-500 p-2 rounded-full shadow-lg">
         <FaStar className="text-yellow-300 animate-pulse" />
