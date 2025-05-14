@@ -17,12 +17,10 @@ export function Erc721BalanceCard() {
   const walletAddress = user?.walletAddress ?? null;
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [nftCount, setNftCount] = useState<string | null>(null);
+  const [nftCount, setNftCount] = useState<number | null>(null);
   const [tokenId, setTokenId] = useState("");
   const [toAddress, setToAddress] = useState("");
   const [transferLoading, setTransferLoading] = useState(false);
-  const [claiming, setClaiming] = useState(false);
-  const [claimMessage, setClaimMessage] = useState<string | null>(null);
 
   const handleCopy = () => {
     if (!walletAddress) return;
@@ -38,7 +36,7 @@ export function Erc721BalanceCard() {
       contractAddress: process.env.NEXT_PUBLIC_ERC721_ADDRESS!,
     });
     setLoading(false);
-    if (result.success && result.data) {
+    if (result.success && typeof result.data === "number") {
       setNftCount(result.data);
     } else {
       setNftCount(null);
@@ -56,18 +54,6 @@ export function Erc721BalanceCard() {
     }, 1000);
   };
 
-  const handleClaimFreeNft = async () => {
-    if (!walletAddress) return;
-    setClaiming(true);
-    setClaimMessage(null);
-    // TODO: 接入后端 claim NFT 接口
-    setTimeout(() => {
-      setClaiming(false);
-      setClaimMessage("✅ 领取成功！请稍后刷新查看");
-    }, 1000);
-    setTimeout(() => setClaimMessage(null), 8000);
-  };
-
   return (
     <div className="relative w-full  max-w-xl mx-auto p-6 backdrop-blur-md bg-white/5 border border-pink-500 shadow-pink-500 rounded-2xl shadow-md text-white space-y-5">
       {/* 流星角标 */}
@@ -83,14 +69,24 @@ export function Erc721BalanceCard() {
       <div className="text-sm text-slate-300">
         <span className="font-medium text-white">当前地址：</span>
         {walletAddress ? (
-          <span className="inline-flex items-center gap-2 px-2 py-1 bg-slate-800 text-pink-300 rounded-md font-mono text-xs break-all">
-            {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-            <button
-              onClick={handleCopy}
-              className="hover:text-white transition text-xs underline underline-offset-2 focus:outline-none">
-              {copied ? "已复制 ✅" : "复制"}
-            </button>
-          </span>
+          <div className="flex flex-wrap items-center gap-2 mt-1">
+            <span className="inline-flex items-center gap-2 px-2 py-1 bg-slate-800 text-pink-300 rounded-md font-mono text-xs break-all">
+              {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+              <button
+                onClick={handleCopy}
+                className="hover:text-white transition text-xs underline underline-offset-2 focus:outline-none">
+                {copied ? "已复制 ✅" : "复制"}
+              </button>
+            </span>
+
+            {/* ✅ NFT 数量展示 */}
+            <span className="inline-flex items-center gap-1 text-xs text-white bg-pink-500/10 border border-pink-500 px-2 py-1 rounded-md font-semibold">
+              🎨 NFT 数量：
+              <span className="text-rose-300 font-mono">
+                {nftCount !== null ? nftCount : "?"}
+              </span>
+            </span>
+          </div>
         ) : (
           <span className="inline-block text-red-400 font-semibold">
             未登录
@@ -115,30 +111,18 @@ export function Erc721BalanceCard() {
 
       <button
         className="w-full py-2 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:brightness-110 active:scale-95 transition-all rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        onClick={handleClaimFreeNft}
-        disabled={!walletAddress || claiming}>
-        {claiming ? (
-          <>
-            <FaSpinner className="animate-spin" /> 领取中...
-          </>
-        ) : (
-          <>
-            <FaGift /> 领取免费 NFT
-          </>
-        )}
+        onClick={() => {}}
+        disabled={true}>
+        <>
+          <FaGift /> 领取免费 NFT
+        </>
       </button>
 
-      {claimMessage && (
-        <div className="text-sm text-center font-medium text-sky-300 mt-2 break-words">
-          {claimMessage}
-        </div>
-      )}
-
-      {nftCount !== null && (
+      {/* {nftCount !== null && (
         <div className="mt-2 px-4 py-3 rounded-lg bg-gradient-to-br from-slate-800 to-slate-700 text-center font-mono text-2xl text-rose-300 shadow-inner ring-1 ring-white/10">
           🖼️ 当前 NFT 数量：{nftCount}
         </div>
-      )}
+      )} */}
 
       {/* 发送 NFT 区块 */}
       <div className="space-y-3 pt-4 border-t border-white/10">

@@ -95,14 +95,24 @@ export function Erc20BalanceCard() {
       <div className="text-sm text-slate-300">
         <span className="font-medium text-white">当前地址：</span>
         {walletAddress ? (
-          <span className="inline-flex items-center gap-2 px-2 py-1 bg-slate-800 text-sky-300 rounded-md font-mono text-xs break-all">
-            {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-            <button
-              onClick={handleCopy}
-              className="hover:text-white transition text-xs underline underline-offset-2 focus:outline-none">
-              {copied ? "已复制 ✅" : "复制"}
-            </button>
-          </span>
+          <div className="flex flex-wrap items-center gap-2 mt-1">
+            <span className="inline-flex items-center gap-2 px-2 py-1 bg-slate-800 text-sky-300 rounded-md font-mono text-xs break-all">
+              {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+              <button
+                onClick={handleCopy}
+                className="hover:text-white transition text-xs underline underline-offset-2 focus:outline-none">
+                {copied ? "已复制 ✅" : "复制"}
+              </button>
+            </span>
+
+            {/* ✅ 显示 ERC20 余额 */}
+            <span className="inline-flex items-center gap-1 text-xs text-white bg-emerald-500/10 border border-emerald-500 px-2 py-1 rounded-md font-semibold">
+              🪙 余额：
+              <span className="text-emerald-300 font-mono">
+                {balance !== null ? balance : "?"}
+              </span>
+            </span>
+          </div>
         ) : (
           <span className="inline-block text-red-400 font-semibold">
             未登录
@@ -144,11 +154,11 @@ export function Erc20BalanceCard() {
         </div>
       )}
 
-      {balance !== null && (
+      {/* {balance !== null && (
         <div className="mt-2 px-4 py-3 rounded-lg bg-gradient-to-br from-slate-800 to-slate-700 text-center font-mono text-2xl text-emerald-300 shadow-inner ring-1 ring-white/10">
           🌠 当前余额：{balance}
         </div>
-      )}
+      )} */}
 
       {/* 转账区块 */}
       <div className="space-y-3 pt-4 border-t border-white/10">

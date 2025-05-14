@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
@@ -43,7 +44,7 @@ export function NFTGallery() {
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto p-6 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-xl text-white space-y-6">
+    <div className="relative w-full mx-auto p-6 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-xl text-white space-y-6">
       <div className="absolute -top-3 -right-3 bg-gradient-to-br from-yellow-500 to-pink-500 p-2 rounded-full shadow-lg">
         <FaStar className="text-white animate-pulse" />
       </div>
