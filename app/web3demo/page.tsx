@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthGuard } from "@/components/auth/AuthGuard";
 import { Erc20BalanceCard } from "@/components/erc20/Erc20BalanceCard";
 import { Erc721BalanceCard } from "@/components/erc721/Erc721BalanceCard";
 import { NFTGallery } from "@/components/erc721/NFTGallery";
