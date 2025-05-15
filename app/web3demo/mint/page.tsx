@@ -3,7 +3,7 @@ import React from "react";
 
 const page = () => {
   return (
-    <div>
+    <div className="flex w-full">
       <Create_NFT_Form />
     </div>
   );

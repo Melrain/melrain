@@ -30,3 +30,26 @@ export async function getBalance({
     };
   }
 }
+
+export async function mintNft(formData: FormData): Promise<ApiResult<string>> {
+  try {
+    const res = await api.post("/erc721/mint", formData);
+
+    return {
+      success: true,
+      data: res.data.txHash, // 后端建议返回 txHash 字段
+    };
+  } catch (err: any) {
+    console.error("[mintNft error]", err);
+
+    const message =
+      err?.response?.data?.message ||
+      err?.message ||
+      "NFT 铸造失败，发生未知错误";
+
+    return {
+      success: false,
+      error: message,
+    };
+  }
+}

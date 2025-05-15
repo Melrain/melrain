@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { mintNft } from "@/lib/erc721";
 import React, { useState, useRef } from "react";
 
 const MAX_FILE_SIZE_MB = 10;
@@ -67,16 +68,12 @@ const Create_NFT_Form = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/nft/mint", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await mintNft(formData); // 调用封装好的 API 请求
 
-      const result = await res.json();
-      if (res.ok) {
-        alert(`✅ NFT 创建成功: ${result.txHash}`);
+      if (res.success) {
+        alert(`✅ NFT 创建成功: ${res.data}`);
       } else {
-        alert(`❌ 创建失败: ${result.message}`);
+        alert(`❌ 创建失败: ${res.error}`);
       }
     } catch (err) {
       console.error("❌ 网络错误:", err);
