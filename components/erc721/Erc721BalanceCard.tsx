@@ -11,6 +11,7 @@ import {
   FaGift,
 } from "react-icons/fa";
 import { getBalance } from "@/lib/erc721";
+import Link from "next/link";
 
 export function Erc721BalanceCard() {
   const { user } = usePublicUserStore();
@@ -64,6 +65,11 @@ export function Erc721BalanceCard() {
       <div className="flex items-center space-x-3">
         <FaCubes className="text-2xl text-pink-400 drop-shadow" />
         <h2 className="text-xl font-bold tracking-wide">我的 NFT 收藏</h2>
+        <Link
+          href={"/web3demo/mint"}
+          className="border-1 p-1 px-2 rounded-sm shadow-sm shadow-pink-500 bg-indigo-800">
+          Mint
+        </Link>
       </div>
 
       <div className="text-sm text-slate-300">
